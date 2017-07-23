@@ -1,0 +1,24 @@
+.main {
+  height: 100vh;
+
+  input[type="radio"] {
+    margin: 0;
+  }
+}
+
+.buttons {
+  margin-top: 2.5rem;
+}
+
+.progress {
+  position: relative;
+  .progress-meter {
+    position: initial;
+    transition: all ease .7s;
+  }
+}
+
+.error-message {
+  color: $alert-color;
+  position: absolute;
+}
