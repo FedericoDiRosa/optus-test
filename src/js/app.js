@@ -13,8 +13,12 @@ class App {
     return this.data;
   }
 
+  fetchData() {
+    return axios.get('http://pb-api.herokuapp.com/bars');
+  }
+
   init() {
-    const request = axios.get('http://pb-api.herokuapp.com/bars');
+    const request = this.fetchData();
     request.then((response) => {
       this.setData(response.data);
       console.log(this.data); // eslint-disable-line no-console
@@ -80,27 +84,32 @@ class App {
     }
   }
 
+  getCheckedRadio() {
+    let output = null;
+    document.querySelectorAll('input[type="radio"]').forEach((radio) => {
+      if (radio.checked) output = radio;
+    });
+    return output;
+  }
+
   onButtonClick(event) {
     const value = parseInt(event.target.getAttribute('data-value'), 10);
-    let checked = 0;
-    document.querySelectorAll('input[type="radio"]').forEach((radio) => {
-      if (radio.checked) {
-        checked += 1;
-        this.errorMessage();
+    const checkedRadio = this.getCheckedRadio();
+    if (checkedRadio) {
+      this.errorMessage();
+      const index = checkedRadio.getAttribute('data-index');
+      const valueElement = document.querySelector(`.bars .progress[data-index="${index}"] span.value`);
+      const newValues = this.calculateNewValues(value, valueElement.innerHTML);
 
-        const index = radio.getAttribute('data-index');
-        const valueElement = document.querySelector(`.bars .progress[data-index="${index}"] span.value`);
-        const newValues = this.calculateNewValues(value, valueElement.innerHTML);
+      this.updateApplicationState(index, newValues.newValue);
+      console.log(this.data); // eslint-disable-line no-console
 
-        this.updateApplicationState(index, newValues.newValue);
-        console.log(this.data); // eslint-disable-line no-console
-
-        valueElement.innerHTML = newValues.newValue;
-        this.styleProgressBar(index, newValues);
-        document.querySelector(`.bars .progress[data-index="${index}"] span.percentage`).innerHTML = `${newValues.percentage}%`;
-      }
-    });
-    if (!checked) this.errorMessage('Please select a progress bar by checking a radio input');
+      valueElement.innerHTML = newValues.newValue;
+      this.styleProgressBar(index, newValues);
+      document.querySelector(`.bars .progress[data-index="${index}"] span.percentage`).innerHTML = `${newValues.percentage}%`;
+    } else {
+      this.errorMessage('Please select a progress bar by checking a radio input');
+    }
   }
 
   generateButtons() {
