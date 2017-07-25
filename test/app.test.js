@@ -10,10 +10,10 @@ global.document = document;
 global.window = window;
 
 const app = new App();
+const dataObject = { buttons: [10, -29], bars: [26], limit: 160 };
 
 describe('setData', () => {
   it('should set the application data correctly', () => {
-    const dataObject = { buttons: [10, -29], bars: [26], limit: 160 };
     app.setData(dataObject);
     const newData = app.getData();
     expect(newData).to.equal(dataObject);
